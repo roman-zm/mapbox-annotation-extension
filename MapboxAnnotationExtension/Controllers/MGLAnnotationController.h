@@ -82,6 +82,7 @@ NS_ASSUME_NONNULL_BEGIN
 */
 - (instancetype)initWithMapView:(MGLMapView *)mapView belowLayerIdentifier:(NSString *)layerIdentifier;
 
+- (instancetype)initWithMapView:(MGLMapView *)mapView options:(NSDictionary<MGLShapeSourceOption, id> *)options;
 
 # pragma mark Adding, removing, and updating style annotations
 

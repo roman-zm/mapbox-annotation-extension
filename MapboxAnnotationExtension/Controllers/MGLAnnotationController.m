@@ -23,7 +23,7 @@
 
 - (instancetype)initWithMapView:(MGLMapView *)mapView {
     if (self = [super init]) {
-        [self commonInit:mapView];
+        [self commonInit:mapView options:nil];
         [self initializeLayer];
         [self.mapView.style addLayer:self.layer];
     }
@@ -33,7 +33,7 @@
 
 - (instancetype)initWithMapView:(MGLMapView *)mapView belowLayerIdentifier:(nonnull NSString *)layerIdentifier {
     if (self = [super init]) {
-        [self commonInit:mapView];
+        [self commonInit:mapView options:nil];
         [self initializeLayer];
         MGLStyleLayer *topLayer = [self.mapView.style layerWithIdentifier:layerIdentifier];
         [self.mapView.style insertLayer:self.layer belowLayer:topLayer];
@@ -42,7 +42,17 @@
     return self;
 }
 
-- (void)commonInit:(MGLMapView *)mapView {
+- (instancetype)initWithMapView:(MGLMapView *)mapView options:(NSDictionary<MGLShapeSourceOption, id> *)options {
+    if (self = [super init]) {
+        [self commonInit:mapView options:options];
+        [self initializeLayer];
+        [self.mapView.style addLayer:self.layer];
+    }
+    
+    return self;
+}
+
+- (void)commonInit:(MGLMapView *)mapView options:(NSDictionary<MGLShapeSourceOption, id> *)options {
     self.mapView = mapView;
     NSString *uuid = [[NSUUID UUID] UUIDString];
     
@@ -50,7 +60,7 @@
     NSString *geoJSON = @"{\"type\": \"FeatureCollection\",\"features\": []}";
     NSData *data = [geoJSON dataUsingEncoding:NSUTF8StringEncoding];
     MGLShape *shape = [MGLShape shapeWithData:data encoding:NSUTF8StringEncoding error:NULL];
-    self.source = [[MGLShapeSource alloc] initWithIdentifier:sourceIdentifier shape:shape options:nil];
+    self.source = [[MGLShapeSource alloc] initWithIdentifier:sourceIdentifier shape:shape options:options];
     [self.mapView.style addSource:self.source];
     self.annotations = [NSMutableDictionary dictionary];
     self.enabledPaintProperties = [NSMutableDictionary dictionary];
